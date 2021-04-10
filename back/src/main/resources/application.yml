@@ -1,0 +1,56 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/imkg?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 779428136
+    #连接池
+    hikari:
+      pool-name: DateHikariCP
+      minimum-idle: 5
+      idle-timeout: 180000
+      maximum-pool-size: 10
+      auto-commit: true
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 1
+    lettuce:
+      pool:
+        max-active: 1024
+        max-wait: 10000ms
+        #最大空闲连接
+        max-idle: 200
+        #最小空闲连接
+        min-idle: 5
+  neo4j:
+      url: bolt://localhost:7687
+      username: neo4j
+      password: 779428136
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.ssdut.imkg.pojo
+  configuration:
+    map-underscore-to-camel-case: false
+
+logging:
+  level:
+    com.ssdut.imkg.mapper: debug
+
+jwt:
+  #请求头
+  tokenHeader: Authorization
+  #加密、解密使用的密钥
+  secret: imkg
+  #超时时间 7天后过期
+  expiration: 604800
+  #负载中拿到开头
+  tokenHead: Bearer

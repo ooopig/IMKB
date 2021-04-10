@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssdut.imkg.mapper.RelationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ssdut.imkg.pojo.Relation">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="source_id" property="sourceId" />
+        <result column="target_id" property="targetId" />
+        <result column="weight" property="weight" />
+        <result column="properties" property="properties" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_user" property="modifyUser" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <resultMap id="relationParam" type="com.ssdut.imkg.pojo.pub.RelationParam">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="source_id" property="sourceId" />
+        <result column="target_id" property="targetId" />
+        <result column="source_name" property="sourceName" />
+        <result column="target_name" property="targetName" />
+        <result column="weight" property="weight" />
+        <result column="properties" property="properties" />
+        <result column="create_user" property="createUserId" />
+        <result column="create_user_name" property="createUserName" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_user" property="modifyUserId" />
+        <result column="modify_user_name" property="modifyUserName" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, source_id, target_id, weight, properties, create_user, create_time, modify_user, modify_time
+    </sql>
+
+    <select id="getChildrenRelation" resultMap="BaseResultMap">
+        select *
+        from relation
+        where target_id = #{id}
+    </select>
+
+    <delete id="removeByIdAndName">
+        delete  from relation
+        where target_id = #{id}
+        and name = #{name}
+    </delete>
+
+    <select id="selectRelations" resultMap="relationParam">
+        select relation.*,
+               u1.name as create_user_name,
+               n1.name as source_name,
+               n2.name as target_name
+        from relation,node as n1,node as n2,user as u1
+        where relation.source_id = n1.id
+        and relation.target_id = n2.id
+        and relation.create_user  = u1.id
+        <if test="null!=name and ''!=name">
+            and relation.name like concat('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="getAllRelations" resultMap="BaseResultMap">
+        select id, name, source_id, target_id, weight from relation
+    </select>
+
+</mapper>

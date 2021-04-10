@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssdut.imkg.mapper.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ssdut.imkg.pojo.Menu">
+        <id column="id" property="id" />
+        <result column="url" property="url" />
+        <result column="path" property="path" />
+        <result column="component" property="component" />
+        <result column="name" property="name" />
+        <result column="iconCls" property="iconcls" />
+        <result column="keep_alive" property="keepAlive" />
+        <result column="require_auth" property="requireAuth" />
+        <result column="parent_id" property="parentId" />
+        <result column="enabled" property="enabled" />
+    </resultMap>
+
+    <resultMap id="MenusWithRole" type="com.ssdut.imkg.pojo.Menu" extends="BaseResultMap">
+        <collection property="roles" ofType="com.ssdut.imkg.pojo.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="Menus" type="com.ssdut.imkg.pojo.Menu" extends="BaseResultMap">
+        <collection property="children" ofType="com.ssdut.imkg.pojo.Menu">
+            <id column="id2" property="id" />
+            <result column="url2" property="url" />
+            <result column="path2" property="path" />
+            <result column="component2" property="component" />
+            <result column="name2" property="name" />
+            <result column="iconCls2" property="iconcls" />
+            <result column="keep_alive2" property="keepAlive" />
+            <result column="require_auth2" property="requireAuth" />
+            <result column="parent_id2" property="parentId" />
+            <result column="enabled2" property="enabled" />
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, url, path, component, name, iconCls, keep_alive, require_auth, parent_id, enabled
+    </sql>
+
+
+    <!--根据角色获取菜单-->
+    <select id="getMenusWithRole" resultMap="MenusWithRole">
+        select m.*,
+               r.id as rid,
+               r.name as rname,
+               r.name_zh as rnameZh
+        from menu m,
+             menu_role mr,
+             role r
+        where
+            m.id = mr.menu_id
+          and mr.role_id = r.id
+        order by m.id
+    </select>
+
+
+    <!-- 根据用户id查询菜单列表 -->
+    <select id="getMenusByUserId" resultMap="Menus">
+        SELECT DISTINCT
+            m1.*,
+            m2.id AS id2,
+            m2.url AS url2,
+            m2.path AS path2,
+            m2.component AS component2,
+            m2.name AS name2,
+            m2.iconCls AS iconCls2,
+            m2.keep_alive AS keep_alive2,
+            m2.require_auth AS require_auth2,
+            m2.parent_id AS parent_id2,
+            m2.enabled AS enabled2
+        FROM
+            menu m1,
+            menu m2,
+            user_role ur,
+            menu_role mr
+        WHERE
+            m1.id = m2.parent_id
+          AND ur.user_id = #{id}
+          AND mr.role_id = ur.role_id
+          AND m2.id = mr.menu_id
+          AND m2.enabled = TRUE
+        ORDER BY
+            m1.id,
+            m2.id
+
+    </select>
+
+</mapper>

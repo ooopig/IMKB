@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssdut.imkg.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ssdut.imkg.pojo.User">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="telephone" property="telephone" />
+        <result column="address" property="address" />
+        <result column="enabled" property="enabled" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="user_face" property="userFace" />
+        <result column="remark" property="remark" />
+        <result column="contribution" property="contribution" />
+    </resultMap>
+
+    <resultMap id="userList" type="com.ssdut.imkg.pojo.pub.UserRequestParam">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="telephone" property="telephone" />
+        <result column="address" property="address" />
+        <result column="enabled" property="enabled" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="user_face" property="userFace" />
+        <result column="remark" property="remark" />
+        <result column="name_zh" property="role"></result>
+        <result column="contribution" property="contribution" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, phone, telephone, address, enabled, username, password, user_face, remark,contribution
+    </sql>
+
+
+    <!--根据id查询用户角色-->
+<!--    <select id="getUserRoles" resultType="com.ssdut.imkg.pojo.Role">-->
+<!--        select r.id, r.name, r.name_zh-->
+<!--        from role as r-->
+<!--                 left join user_role ur-->
+<!--                           on r.id = ur.role_id-->
+<!--        where ur.id = #{id};-->
+<!--    </select>-->
+
+    <!--添加用户-->
+    <insert id="addUser" parameterType="com.ssdut.imkg.pojo.pub.UserRequestParam">
+        insert into user(id, name, phone, telephone, address, enabled, username, password,user_face,  remark,contribution)
+        values (#{id},#{name},#{phone},#{telephone},#{address},#{enabled},#{username},#{password},#{userFace},#{remark},#{contribution})
+    </insert>
+
+<!--    查询用户 分页-->
+    <select id="getUsers" resultMap="userList">
+        select u.*,r.name_zh
+        from user as u,user_role as ur ,role as r
+        where u.id = ur.user_id
+          and ur.role_id = r.id
+          <if test="null!=user.name and ''!=user.name">
+            and u.name like concat('%',#{user.name},'%')
+          </if>
+        <if test="null!=user.contribution">
+            and u.contribution = #{user.contribution}
+        </if>
+        <if test="null!=user.role and ''!=user.role">
+            and r.name_zh = #{user.role}
+        </if>
+        order by u.id
+    </select>
+
+    <select id="getAllUsers" resultMap="userList">
+        select u.*,r.name_zh
+        from user as u,user_role as ur ,role as r
+        where u.id = ur.user_id
+          and ur.role_id = r.id
+    </select>
+
+</mapper>

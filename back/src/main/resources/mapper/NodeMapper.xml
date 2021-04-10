@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssdut.imkg.mapper.NodeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ssdut.imkg.pojo.Node">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="level" property="level" />
+        <result column="status" property="status" />
+        <result column="properties" property="properties" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_user" property="modifyUser" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <resultMap id="nodeList" type="com.ssdut.imkg.pojo.pub.NodeParam">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="level" property="level" />
+        <result column="status" property="status" />
+        <result column="properties" property="properties" />
+        <result column="create_u" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, level, status, properties, create_user, create_time, modify_user, modify_time
+    </sql>
+
+    <select id="selectNodes" resultMap="nodeList">
+        select n.id,n.name,n.level,n.status,n.properties,u1.name as create_u,n.create_time,n.modify_time
+        from node n,user u1
+        where n.create_user = u1.id
+        <if test="null!=node.name and ''!=node.name">
+            and n.name like concat('%',#{node.name},'%')
+        </if>
+        <if test="null!=node.createUser and ''!=node.createUser">
+            and u1.name like concat('%',#{node.createUser},'%')
+        </if>
+        <if test="null!=node.level">
+            and n.level = #{node.level}
+        </if>
+        order by n.id
+    </select>
+
+    <select id="getNodeModifyUser" resultType="String">
+        select user.name
+        from node left join user
+        on node.modify_user = user.id
+        where node.id = #{id}
+    </select>
+
+    <select id="getChildrenNode" resultMap="BaseResultMap">
+        select nt.*
+        from node nf, relation , node nt
+        where nf.id = relation.source_id
+        and relation.target_id = nt.id
+        and nf.id = #{id}
+    </select>
+
+
+</mapper>
