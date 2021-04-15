@@ -2,7 +2,10 @@ package com.ssdut.imkg.controller;
 
 
 import com.ssdut.imkg.pojo.File;
+import com.ssdut.imkg.pojo.pub.FileParam;
+import com.ssdut.imkg.pojo.pub.NodeParam;
 import com.ssdut.imkg.pojo.pub.RespBean;
+import com.ssdut.imkg.pojo.pub.RespPageBean;
 import com.ssdut.imkg.service.FileService;
 import com.ssdut.imkg.utils.TimeUtils;
 import io.swagger.annotations.Api;
@@ -29,20 +32,28 @@ public class FileController {
 
     @ApiOperation("上传文件")
     @PostMapping("/file/upload")
-    public RespBean uploadFile(@RequestBody File file){
+    public boolean uploadFile(@RequestBody File file){
         file.setCreateTime(TimeUtils.nowStr());
         file.setDownTimes(0);
         boolean save = fileService.save(file);
         if(save)
-            return RespBean.success("上传成功");
+            return true;
         else
-            return RespBean.error("上传失败，请重试");
+            return false;
     }
 
     @ApiOperation("获取节点的文件")
-    @PostMapping("/file/get/{id}")
+    @GetMapping("/file/get/{id}")
     public List<File> getNodeFile(@PathVariable("id") String id){
         List<File> files = fileService.getNodeFile(id);
         return files;
+    }
+
+    @ApiOperation(value = "管理员分页查询所有文件")
+    @GetMapping("/manage/kb/getFiles")
+    public RespPageBean getFiles(@RequestParam(defaultValue = "1")Integer currentPage,
+                                 @RequestParam(defaultValue = "10")Integer size,
+                                 FileParam file){
+        return fileService.getFiles(currentPage,size,file);
     }
 }

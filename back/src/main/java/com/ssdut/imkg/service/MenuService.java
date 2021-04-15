@@ -26,4 +26,6 @@ public interface MenuService extends IService<Menu> {
      * @return
      */
     List<Menu> getMenusByUserId();
+
+    Menu getMenuById(Integer id);
 }

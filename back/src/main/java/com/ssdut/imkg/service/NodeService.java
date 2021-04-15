@@ -4,6 +4,7 @@ import com.ssdut.imkg.pojo.Node;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ssdut.imkg.pojo.pub.NodeParam;
 import com.ssdut.imkg.pojo.pub.RespPageBean;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -70,4 +71,21 @@ public interface NodeService extends IService<Node> {
     List<Node> getInitNodes();
 
     boolean existNodeByName(String name);
+
+    List<Node> getParents(Integer id);
+
+    List<Node> searchNodeByName(String name,Integer level);
+
+    List<String> getAllNodeNames();
+
+
+    List<NodeParam> searchNodeByName2(String name, Integer level);
+
+    List<Node> searchNodeByCreateUserId(Integer id);
+
+    RespPageBean getExpertNodes(Integer currentPage, Integer size, NodeParam node);
+
+    Integer adoptNode(Integer id);
+
+    Integer notAdoptNode(Integer id);
 }

@@ -47,6 +47,24 @@
         order by n.id
     </select>
 
+
+    <select id="getExpertNodes" resultMap="nodeList">
+        select n.id,n.name,n.level,n.status,n.properties,u1.name as create_u,n.create_time,n.modify_time
+        from node n,user u1
+        where n.create_user = u1.id
+          and n.status = 0
+        <if test="null!=node.name and ''!=node.name">
+            and n.name like concat('%',#{node.name},'%')
+        </if>
+        <if test="null!=node.createUser and ''!=node.createUser">
+            and u1.name like concat('%',#{node.createUser},'%')
+        </if>
+        <if test="null!=node.level">
+            and n.level = #{node.level}
+        </if>
+        order by n.id
+    </select>
+
     <select id="getNodeModifyUser" resultType="String">
         select user.name
         from node left join user
@@ -62,5 +80,60 @@
         and nf.id = #{id}
     </select>
 
+    <select id="getParents" resultMap="BaseResultMap">
+        select nf.*
+        from node nf, relation , node nt
+        where nf.id = relation.source_id
+          and relation.target_id = nt.id
+          and nt.id = #{id}
+    </select>
 
+    <select id="getNodeName" resultType="String">
+        select name
+        from node
+        where name like concat('%',#{name},'%')
+    </select>
+
+    <select id="getAllNodeNames" resultType="String">
+        select name from node
+    </select>
+
+    <select id="searchNodeByName" resultMap="BaseResultMap">
+        select *
+        from node
+        where status = 1
+        <if test="null!=name and ''!=name">
+            and  name like concat('%',#{name},'%')
+        </if>
+        <if test="null!=level">
+            and level = #{level}
+        </if>
+    </select>
+
+    <select id="searchNodeByName2" resultMap="nodeList">
+
+        select n.id,n.name,n.level,n.status,n.properties,u1.name as create_u,n.create_time,n.modify_time
+        from node n,user u1
+        where n.create_user = u1.id
+        and n.status = 1
+        <if test="null!=name and ''!=name">
+            and  n.name like concat('%',#{name},'%')
+        </if>
+        <if test="null!=level">
+            and n.level = #{level}
+        </if>
+    </select>
+
+    <update id="adoptNode">
+        update node
+        set status = 1
+        where id = #{id}
+    </update>
+
+
+    <update id="notAdoptNode">
+        update node
+        set status = 2
+        where id = #{id}
+    </update>
 </mapper>

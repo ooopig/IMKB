@@ -52,6 +52,7 @@ public class Menu implements Serializable {
     private String requireAuth;
 
     @ApiModelProperty(value = "父id")
+    @TableField("parent_id")
     private Integer parentId;
 
     @ApiModelProperty(value = "是否启用")

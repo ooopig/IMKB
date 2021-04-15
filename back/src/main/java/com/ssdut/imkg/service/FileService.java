@@ -2,6 +2,8 @@ package com.ssdut.imkg.service;
 
 import com.ssdut.imkg.pojo.File;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ssdut.imkg.pojo.pub.FileParam;
+import com.ssdut.imkg.pojo.pub.RespPageBean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,4 +30,6 @@ public interface FileService extends IService<File> {
      * @return
      */
     Boolean deleteNodeFile(String id);
+
+    RespPageBean getFiles(Integer currentPage, Integer size, FileParam file);
 }

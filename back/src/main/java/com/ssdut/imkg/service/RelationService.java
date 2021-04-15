@@ -4,6 +4,7 @@ import com.ssdut.imkg.pojo.Node;
 import com.ssdut.imkg.pojo.Relation;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ssdut.imkg.pojo.pub.RespPageBean;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

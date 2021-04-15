@@ -8,15 +8,50 @@
         <result column="name" property="name" />
         <result column="type" property="type" />
         <result column="url" property="url" />
+        <result column="description" property="description" />
         <result column="node_id" property="nodeId" />
         <result column="create_user" property="createUser" />
         <result column="create_time" property="createTime" />
         <result column="down_times" property="downTimes" />
     </resultMap>
 
+    <resultMap id="fileMap" type="com.ssdut.imkg.pojo.pub.FileParam" >
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="url" property="url" />
+        <result column="description" property="description" />
+        <result column="node_id" property="nodeId" />
+        <result column="node_name" property="nodeName"></result>
+        <result column="create_user" property="createUser" />
+        <result column="create_user_name" property="createUserName"></result>
+        <result column="create_time" property="createTime" />
+        <result column="down_times" property="downTimes" />
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, type, url, node_id, create_user, create_time, down_times
+        id, name, type, url, description, node_id, create_user, create_time, down_times
     </sql>
+
+    <select id="getFiles" resultMap="fileMap">
+        select f.*,u.name as create_user_name,n.name as node_name
+        from file f,user u,node n
+        where f.create_user = u.id
+          and f.node_id = n.id
+        <if test="null!=file.name and ''!=file.name">
+            and f.name like concat('%',#{file.name},'%')
+        </if>
+        <if test="null!=file.createUser and ''!=file.createUser">
+            and u.name like concat('%',#{file.createUser},'%')
+        </if>
+        <if test="null!=file.nodeName and ''!=file.nodeName">
+            and n.name like concat('%',#{file.nodeName},'%')
+        </if>
+        <if test="null!=file.type and ''!=file.type">
+            and f.type = #{file.type}
+        </if>
+        order by f.id
+    </select>
 
 </mapper>

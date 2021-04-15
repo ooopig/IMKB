@@ -37,7 +37,23 @@ public interface NodeMapper extends BaseMapper<Node> {
      */
     String getNodeModifyUser(@Param("id")Integer id);
 
-    List<Node> getChildrenNode();
+    List<Node> getChildrenNode(@Param("id") Integer id);
 
     List<Node> getInitNodes();
+
+    List<Node> getParents(@Param("id") Integer id);
+
+    List<String> getNodeName(String name);
+
+    List<String> getAllNodeNames();
+
+    List<Node> searchNodeByName( String name , Integer level);
+
+    List<NodeParam> searchNodeByName2(String name, Integer level);
+
+    IPage<NodeParam> getExpertNodes(Page<NodeParam> page, NodeParam node);
+
+    Integer adoptNode(Integer id);
+
+    Integer notAdoptNode(Integer id);
 }

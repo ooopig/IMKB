@@ -1,8 +1,13 @@
 package com.ssdut.imkg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ssdut.imkg.pojo.File;
 import com.ssdut.imkg.mapper.FileMapper;
+import com.ssdut.imkg.pojo.pub.FileParam;
+import com.ssdut.imkg.pojo.pub.NodeParam;
+import com.ssdut.imkg.pojo.pub.RespPageBean;
 import com.ssdut.imkg.service.FileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +47,16 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
             }
         }
         return true;
+    }
+
+    @Override
+    public RespPageBean getFiles(Integer currentPage, Integer size, FileParam file) {
+
+        //开启分页
+        Page<FileParam> page = new Page<>(currentPage,size);
+        IPage<FileParam> nodeIPage = fileMapper.getFiles(page,file);
+        List<FileParam> nodes = nodeIPage.getRecords();
+        RespPageBean respPageBean = new RespPageBean(nodeIPage.getTotal(),nodes);
+        return respPageBean;
     }
 }

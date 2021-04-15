@@ -3,7 +3,11 @@
 <!--    顶部栏-->
     <div class="top">
 <!--      选择器-->
-      <el-select v-model="value" style="width: 150px" size="small" placeholder="请选择节点等级">
+      <el-select clearable
+                 v-model="inputLevel"
+                 style="width: 150px"
+                 size="small"
+                 placeholder="请选择节点等级">
         <el-option
             v-for="item in options"
             :key="item.value"
@@ -13,18 +17,18 @@
           <span v-bind:style="{'color':item.color }">{{ item.label }}</span>
         </el-option>
       </el-select>
-<!--      输入框-->
-      <el-autocomplete
+      <el-input
           size="small"
+          clearable
           prefix-icon="el-icon-search"
           class="inline-input"
-          v-model="inputState"
-          :fetch-suggestions="querySearch"
+          v-model="inputName"
           placeholder="请输入关键词"
-          :trigger-on-focus="false"
-          @select="handleSelect"
           style="margin-right: 5px;width: 200px"
-      ></el-autocomplete>
+      >
+
+      </el-input>
+
       <el-button type="primary" size="small"  icon="el-icon-search" @click="search">搜索</el-button>
 
       <div style="margin-left: 50px;display: flex;flex-direction: column;justify-content: center;color:#111111"> 节点数量：
@@ -39,9 +43,9 @@
         导出数据
       </el-button>
       <!--      刷新-->
-<!--      <div @click="refresh" style="margin-left: 100px; cursor: pointer;color: #409eff;display: flex;flex-direction: column;justify-content: center">-->
-<!--        <i class="fa fa-refresh">刷新</i>-->
-<!--      </div>-->
+      <div @click="refresh" style="margin-left: 100px; cursor: pointer;color: #409eff;display: flex;flex-direction: column;justify-content: center">
+        <i class="fa fa-refresh">刷新</i>
+      </div>
 
     </div>
 
@@ -56,39 +60,50 @@
             <span style="margin-left: 10px;color: #409eff">{{test}}</span>
           </div>
           <div class="text item" v-show="board.haveCurrentNode">
-            <el-image style="height: 150px;margin-bottom: 5px" v-show="board.img" :src="board.img"></el-image>
+            <el-image style="height: 150px;margin-bottom: 5px" v-show="board.currentNode.pic" :src="board.currentNode.pic"></el-image>
 <!--折叠面板-->
-            <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse v-model="activeNames" @change="handleChange" accordion>
               <el-collapse-item title="基本信息" name="1" >
-                <div style="text-align: left" v-for="(v,k) in board.currentNode" :key="k">
-                  {{k}}:{{v}}
-                </div>
+                <p style="text-align: left">名称：{{board.currentNode.name}}</p>
+                <p style="text-align: left">分组：{{board.currentNode.group}}</p>
+<!--                <p style="text-align: left">描述：{{board.currentNode.summary}}</p>-->
               </el-collapse-item>
               <el-collapse-item title="父节点" name="2"  >
-
+                <div v-if="board.parents" style="text-align: left" v-for="(v,k) in board.parents" :key="k">
+                  {{v.name}}
+                </div>
+                <div v-else>
+                  无
+                </div>
               </el-collapse-item>
               <el-collapse-item title="子节点" name="3" >
-
+                <div v-if="board.children" style="text-align: left" v-for="(v,k) in board.children" :key="k">
+                  {{v.name}}
+                </div>
+                <div v-else>
+                  无
+                </div>
               </el-collapse-item>
             </el-collapse>
-<!--            <div style="cursor: pointer; font-size: small;color: grey;margin-top: 10px;" @click="moreInfo()">更多信息=></div>-->
-            <el-button @click="moreInfo" type="text" style="width: 100%">查看更多信息</el-button>
+            <el-button @click="getNodeInfo" type="text" style="width: 100%" >查看更多信息</el-button>
           </div>
         </el-card>
 
 <!--        <el-card class="operatenode" shadow="hover" v-show="board.showOperate&board.haveCurrentNode">-->
-<!--          <div slot="header" class="clearfix">-->
-<!--            <span>操作节点</span>-->
-<!--          </div>-->
-<!--          <div>-->
-<!--            <div style="display: flex;justify-content: space-around">-->
-<!--              <el-button @click="modifyNode"> 编辑</el-button>-->
-<!--              <el-button @click="addNode"> 添加</el-button>-->
-<!--              <el-button @click="deletekgNode"> 删除</el-button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </el-card>-->
+        <el-card class="operatenode" shadow="hover" v-show="false">
+          <div slot="header" class="clearfix">
+            <span>操作节点</span>
+          </div>
+          <div>
+            <div style="display: flex;justify-content: space-around">
+              <el-button @click="modifyNode"> 编辑</el-button>
+              <el-button @click="addNode"> 添加</el-button>
+              <el-button @click="deletekgNode"> 删除</el-button>
+            </div>
+          </div>
+        </el-card>
       </div>
+
     </div>
 
 <!--    节点编辑dialog-->
@@ -136,6 +151,38 @@
 
 
     </el-dialog>
+    <!--      节点详细信息抽屉-->
+    <el-drawer
+        :title="board.currentNode.name"
+        :visible.sync="drawer"
+        :direction="direction"
+        :before-close="handleClose">
+
+      <el-collapse v-model="drawActiveName" accordion style="padding: 5px">
+        <el-collapse-item title="图片" name="1" style="justify-content: center">
+          <div class="demo-image__preview" style="display: flex;flex-direction: row;justify-content: center">
+            <el-image
+                style="width: 200px; height: 130px"
+                :src="board.currentNode.pic"
+                :preview-src-list="srcList">
+            </el-image>
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="介绍" name="2">
+          <p>
+            {{board.currentNode.summary}}
+          </p>
+        </el-collapse-item>
+        <el-collapse-item title="属性" name="3">
+          <p v-for="(v,k) in board.currentNode.basic_info" :key="v">
+            {{k}}：{{v}}
+          </p>
+        </el-collapse-item>
+        <el-collapse-item title="创建时间" name="4">
+          <p>{{board.currentNode.createTime}}</p>
+        </el-collapse-item>
+      </el-collapse>
+    </el-drawer>
 
   </div>
 </template>
@@ -149,6 +196,10 @@ export default {
   components: {MyComponentUe},
   data(){
     return{
+      drawer: false,
+      direction: 'rtl',
+      drawActiveName:'1',
+      srcList:[],
       ueprop:{
         defaultMsg: '这里是UE测试',
         config: {
@@ -156,7 +207,8 @@ export default {
           initialFrameHeight: 500
         }
       },
-
+      nodeNames:[],
+      timeout:null,
       dialogEditNode:false,
       dialogAdd:false,
       activeNames: ['1'],
@@ -178,36 +230,40 @@ export default {
       },
       colorList : [
         '#FE0302','#71d075','#1699c1','#0be09d',
-         '#00CD00','#1d3093','#FF7204','#019899',
-        '#c46bc6','#89D5FF', '#d72c2c'
+         '#00CD00','#89D5FF','#FF7204','#019899',
+        '#c46bc6', '#d72c2c','#1d3093',
       ],
       height:0,
       width:0,
 
-      inputState:'',
+      inputName:'',
+      inputLevel:'',
       currentNodesNumber:1,
       currentLinksNumber:1,
+
+      existNodeId: [],
+      existRelationId:[],
 
       options:
           [
           {
-        value: '选项1',
+        value: '1',
         label: '一级节点',
         color: '#71d075'
       }, {
-        value: '选项2',
+        value: '2',
         label: '二级节点',
         color: '#1699c1'
       }, {
-        value: '选项3',
+        value: '3',
         label: '三级节点',
         color: '#0be09d'
       }, {
-        value: '选项4',
+        value: '4',
         label: '四级节点',
         color: '#00CD00'
       }, {
-        value: '选项5',
+        value: '5',
         label: '五级节点',
         color: '#FF7204'
       }],
@@ -219,15 +275,21 @@ export default {
         currentNode:{
 
         },
-        img:'',
-        properties:{},
         children:[],
         parents:[],
-      }
+      },
+      drawNode:{},
 
     }
   },
   methods:{
+    /**
+     * 抽屉关闭函数
+    */
+    handleClose(done) {
+      done()
+    },
+
     /**
      * 富文本编辑器
      * */
@@ -242,7 +304,15 @@ export default {
      * 折叠面板处理函数
     */
     handleChange(val) {
-      console.log(val);
+      if(val === 1){
+
+      }
+      else if(val === 2){
+
+      }
+      else if(val === 3){
+
+      }
     },
     /**
      * 节点修改
@@ -251,7 +321,7 @@ export default {
       let that = this
       that.dialogEditNode = true;
       that.form = that.board.currentNode
-      console.log("编辑节点",that.form)
+      //console.log("编辑节点",that.form)
     },
 
     removeImg(){
@@ -338,6 +408,8 @@ export default {
       // const links = data.links.map(d => Object.create(d));
       // const nodes = data.nodes.map(d => Object.create(d));
 
+      d3.select('svg').selectAll('*').remove();
+
       that.width = $('#svg').width();
       that.height = $('#svg').height();
 
@@ -347,9 +419,10 @@ export default {
       that.currentNodesNumber = nodes.length;
       that.currentLinksNumber = links.length;
 
+
       that.simulation = d3.forceSimulation(nodes)
           .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-          .force("charge", d3.forceManyBody().strength(-300))
+          .force("charge", d3.forceManyBody().strength(-100))
           .force('collide',d3.forceCollide().strength(-30))
           .force("center", d3.forceCenter(that.width / 2, that.height / 2));
 
@@ -396,8 +469,14 @@ export default {
           //.attr("stroke-width", d => Math.sqrt(d.value));
           .attr("stroke-width", 1)
           .attr('class','link')
-          .attr('id',d=>d.source+'_'+d.relation+'_'+d.target)
-
+          .attr('id',function (d){
+            if(d.source instanceof Object){
+              return d.source.id+'_'+d.relation+'_'+d.target.id
+            }
+            else{
+              return d.source+'_'+d.relation+'_'+d.target
+            }
+          })
       //连线文字
       that.linkText = g.append('g')
           .selectAll('text')
@@ -543,19 +622,141 @@ export default {
     singleClick(d){
       let that = this
       that.getRequest('/kg/graph/node/'+d.id)
-          .then(resp=>{
+          .then(node=>{
             that.board.haveCurrentNode=true
-            for(let k in resp){
-              console.log(k+':'+resp[k])
+            let prop = JSON.parse(node['properties'])
+            that.board.currentNode = {
+              id:node.id,
+              name:node.name,
+              group:node.level,
+              summary:prop.summary,
+              pic:prop.pic,
+              basic_info:prop.basic_info,
+              best_practices:prop.best_practices,
+              pics:[],
+              files:[],
+              createUser:node.createUser,
+              createTime:node.createTime,
             }
-            that.board.currentNode['编号']=resp['id']
-            that.board.currentNode['名称']=resp['name']
-            that.test = resp['name']
-            that.board.currentNode['分组']=resp['level']
-            that.board.properties = JSON.parse(resp['properties'])
-            that.board.img=that.board.properties['pic']
-            //that.board.img = 'http://files.bigpigpeiqi.cn/2021/04/08/50a4274e40c75b19808287bc60b0c8f3.jpg'
-            console.log(that.board.img)
+            //console.log(that.board.currentNode)
+          })
+      that.getNodeChildren(d.id)
+      that.getNodeParent(d.id)
+    },
+
+
+    /**
+     * 获得节点的信息
+     */
+    // getNodeInfo(id){
+    //   let that = this
+    //   that.drawer = true
+    //   that.getRequest('/kg/graph/node/'+id)
+    //   .then(resp=>{
+    //     console.log(resp)
+    //     that.drawNode = {
+    //       'id':resp['id'],
+    //       'name':resp['name'],
+    //       'properties':JSON.parse(resp['properties']),
+    //     }
+    //   })
+    // },
+    getNodeInfo(){
+      this.drawer = true
+    },
+
+    /**
+     * 获得一个节点的所有孩子
+     *
+    */
+    getNodeChildren(id){
+      let that = this
+      that.getRequest('/kg/graph/getChildren/'+id)
+          .then(resp=>{
+              that.existNodeId = []
+              for (let node in that.dataGraph.nodes) {
+                that.existNodeId.push(that.dataGraph.nodes[node].id)
+              }
+            if(resp){
+              that.board.children = resp
+              for (let index in resp) {
+                let temp_node = {
+                      "id":resp[index].id,
+                      "name":resp[index].name,
+                      "group":resp[index].level,
+                }
+
+                if (that.existNodeId.includes(temp_node.id)){
+
+                }
+                else {
+                  that.dataGraph.nodes.push(temp_node)
+                  that.existNodeId.push(temp_node.id)
+                }
+              }
+              //获得所有子关系
+              that.getNodeRelations(id)
+              //that.updateGraph(that.dataGraph)
+            }
+      })
+    },
+
+    /**
+     * 获得一个节点的所有父亲
+     *
+     */
+    getNodeParent(id){
+      let that = this
+      that.getRequest('/kg/graph/getParents/'+id)
+          .then(resp=>{
+            if(resp){
+              that.board.parents = resp
+              //console.log('孩子',that.board.children)
+            }
+          })
+    },
+
+    /**
+     * 获得该节点的所有关系
+     */
+    getNodeRelations(id){
+      let that = this
+      that.getRequest('/kg/graph/getRelation/'+id)
+          .then(resp=>{
+            if(resp){
+              that.existRelationId = []
+              for (let k in that.dataGraph.links) {
+
+                that.existRelationId.push(that.dataGraph.links[k].relationId)
+              }
+              //console.log(that.dataGraph.links)
+              for (let index in resp) {
+                //let existRelationId = []
+                //console.log(existRelationId)
+                let temp_link =
+                    {
+                      "source":resp[index].sourceId,
+                      "relationId":resp[index].id,
+                      "target":resp[index].targetId,
+                      "value":resp[index].weight,
+                      "relation":resp[index].name
+                    }
+                if (that.existRelationId.includes(temp_link.relationId)){
+
+                }
+                else {
+                    if(that.existNodeId.includes(temp_link.source) && that.existNodeId.includes(temp_link.target)){
+                      that.dataGraph.links.push(temp_link)
+                      that.existRelationId.push(temp_link.relationId)
+                    }else {
+                      console.log('与之相关的节点不存在')
+                  }
+                }
+              }
+              //console.log(that.dataGraph.links)
+              //that.clearNodeAndRelation(that.dataGraph);
+              that.updateGraph(that.dataGraph)
+            }
           })
     },
 
@@ -605,7 +806,6 @@ export default {
         //     })
       }
     },
-
     /**
      * 动态刷新
      * @param data
@@ -613,8 +813,9 @@ export default {
     updateGraph(data){
       let that = this
       //console.log(that.colorList)
-      const links = data.links
       const nodes = data.nodes
+      const links = data.links
+
 
       that.currentNodesNumber = nodes.length;
       that.currentLinksNumber = links.length;
@@ -632,7 +833,21 @@ export default {
           })
           .merge(that.nodes)
           .on('click',that.singleClick)
+          .on('mouseenter',function (d){
+            //console.log('鼠标移入'+d)
+            d3.select(this).style('stroke-width',6)
+          })
+          .on('dblclick',function (d){
+            //console.log("节点双击"+d)
+            event.preventDefault()
+          })
+          .on('mouseleave', function () {
+            //console.log('鼠标移出')
+            d3.select(this).style('stroke-width', 2)
+          })
           .call(that.drag(that.simulation));
+
+      d3.selectAll('title').remove();
 
       that.nodes.append("title")
           .text(d => d.name);
@@ -667,7 +882,7 @@ export default {
           .attr("stroke", "#999")
           .attr("stroke-opacity", 0.6)
           //.attr("stroke-width", d => Math.sqrt(d.value));
-          .attr("stroke-width", 2)
+          .attr("stroke-width", 1)
           .merge(that.links)
           .attr('class','link')
           .attr('marker-end','url(#positiveMarker') // 箭头
@@ -685,33 +900,15 @@ export default {
           .data(links)
           .enter()
           .append('text')
-          .style('fill','white')
-          .style('font-size', 6)
+          .style('fill','#999')
+          .style('font-size', 8)
           .style('text-anchor','middle')
           .style('cursor', 'pointer')
           //.style('text-weight','bold')
           //.attr('fill-opacity', 0)
           .attr('class', 'linktext')
-          /**
-          .append('textPath')
-          .attr(
-              'xlink:href',function (d){
-                //console.log(d)
-                if(d.source instanceof Object){
-                  return "#"+d.source.id+'_'+d.relation+'_'+d.target.id
-                }
-                else{
-                  return "#"+d.source+'_'+d.relation+'_'+d.target
-                }
-                //return "#"+d.source+'_'+d.relation+"_"+d.target
-              }
-              //d=>"#"+d.source+'_'+d.relation+"_"+d.target
-          )
-          .attr('startOffset','50%')
-           */
           .merge(that.linkText)
           .text(function (d) {
-            //console.log(d.relation);
             return d.relation
           })
 
@@ -720,38 +917,42 @@ export default {
       that.simulation.alpha(0.8).restart();
     },
 
+    initNodeNames() {
+      let that = this
+      that.getRequest('/kg/graph/search/names')
+      .then(resp=>{
+        that.nodeNames = resp
+        console.log('名字：',that.nodeNames)
+      })
 
-    querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
     },
 
-    loadAll() {
-      return [
-        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-        { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-        { "value": "泷千家(天山西路店)", "address": "天山西路438号" },
-      ];
-    },
-    handleSelect(item) {
-      console.log(item);
-    },
     /**
      * 查找
      */
     search(){
-      this.$message({
-        showClose: true,
-        message: '搜索:'+this.inputState
-      });
+      let that = this
+      that.getRequest('/kg/graph/search?name='+that.inputName+'&level='+that.inputLevel)
+      .then(resp=>{
+        if(resp){
+          let temp_nodes = []
+          //console.log(resp)
+          for (let index in resp) {
+
+            temp_nodes.push(
+                {
+                  "id":resp[index].id,
+                  "name":resp[index].name,
+                  "group":resp[index].level
+                }
+            )
+          }
+          that.dataGraph.nodes = temp_nodes
+          that.dataGraph.links = []
+          that.initGraph(that.dataGraph)
+        }
+      })
+
     },
 
     /**
@@ -763,19 +964,6 @@ export default {
       this.board.haveCurrentNode = false
       this.test = ""
       this.initNode()
-    },
-
-    /**
-     * 更多节点信息
-     */
-    moreInfo(){
-      let uuid = this.board.currentNode['编号']
-      console.log(uuid)
-      this.$router.push({path:'/kg/search',query:{id:uuid}})
-      // this.$message({
-      //   showClose: true,
-      //   message: '更多:'+this.board.currentNode
-      // });
     },
 
     /**
@@ -841,7 +1029,7 @@ export default {
      */
     initLink(){
       let that = this
-      that.getRequest('/kg/graph/allRelations')
+      that.getRequest('/kg/graph/getRelation/1')
           .then(resp=>{
             if(resp){
               let temp_links = []
@@ -857,11 +1045,11 @@ export default {
                 )
               }
               //console.log(temp_nodes)
-
               that.dataGraph.links = temp_links
-              console.log(that.dataGraph.links)
+              //console.log(that.dataGraph.links)
               //初始化图谱
               that.initGraph(that.dataGraph)
+
             }
           })
     },
@@ -919,5 +1107,20 @@ export default {
 }
 .operatenode{
   margin: 5px;
+}
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+  background-color: #d3dce6;
 }
 </style>

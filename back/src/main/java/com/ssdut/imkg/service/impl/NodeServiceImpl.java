@@ -13,6 +13,7 @@ import com.ssdut.imkg.service.NodeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ssdut.imkg.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -90,8 +91,8 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
      * @return
      */
     @Override
-    public List<Node> getChildrenNode(Integer id) {
-        return nodeMapper.getChildrenNode();
+    public List<Node> getChildrenNode( Integer id) {
+        return nodeMapper.getChildrenNode(id);
     }
 
     @Override
@@ -135,4 +136,69 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
             return true;
         }
     }
+
+    /**
+     * 获得一个节点的所有父节点
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Node> getParents(Integer id) {
+        return nodeMapper.getParents(id);
+    }
+
+    @Override
+    public List<Node> searchNodeByName(String name , Integer level) {
+        return nodeMapper.searchNodeByName(name,level);
+    }
+
+    @Override
+    public List<String> getAllNodeNames() {
+        return nodeMapper.getAllNodeNames();
+    }
+
+    @Override
+    public List<NodeParam> searchNodeByName2(String name, Integer level) {
+        return nodeMapper.searchNodeByName2(name,level);
+    }
+
+    @Override
+    public List<Node> searchNodeByCreateUserId(Integer id) {
+        return nodeMapper.selectList(new QueryWrapper<Node>()
+        .eq("create_user",id));
+    }
+
+    /***
+     * 知识专家获取未审核知识
+     * @param currentPage
+     * @param size
+     * @param node
+     * @return
+     */
+    @Override
+    public RespPageBean getExpertNodes(Integer currentPage, Integer size, NodeParam node) {
+
+        //开启分页
+        Page<NodeParam> page = new Page<>(currentPage,size);
+        IPage<NodeParam> nodeIPage = nodeMapper.getExpertNodes(page,node);
+        List<NodeParam> nodes = nodeIPage.getRecords();
+        for (NodeParam node1:nodes) {
+            node1.setModifyUser(nodeMapper.getNodeModifyUser(node1.getId()));
+        }
+        RespPageBean respPageBean = new RespPageBean(nodeIPage.getTotal(),nodes);
+        return respPageBean;
+    }
+
+    @Override
+    public Integer adoptNode(Integer id) {
+
+        return nodeMapper.adoptNode(id);
+    }
+
+    @Override
+    public Integer notAdoptNode(Integer id) {
+        return nodeMapper.notAdoptNode(id);
+    }
+
+
 }

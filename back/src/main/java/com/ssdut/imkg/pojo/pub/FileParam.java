@@ -1,26 +1,24 @@
-package com.ssdut.imkg.pojo;
+package com.ssdut.imkg.pojo.pub;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 /**
- * <p>
- * 
- * </p>
- *
- * @author fanyuanxin
- * @since 2021-04-14
+ * @Author Fan Yuanxin
+ * @Date 2021/4/15 12:54
+ * @Version 1.0
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="File对象", description="")
-public class File implements Serializable {
+public class FileParam implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,9 +42,15 @@ public class File implements Serializable {
     @TableField(value = "node_id")
     private Integer nodeId;
 
+    @ApiModelProperty(value = "节点名字")
+    private String nodeName;
+
     @ApiModelProperty(value = "创建人")
     @TableField(value = "create_user")
     private Integer createUser;
+
+    @ApiModelProperty(value = "创建人名字")
+    private String  createUserName;
 
     @ApiModelProperty(value = "创建时间")
     @TableField(value = "create_time")

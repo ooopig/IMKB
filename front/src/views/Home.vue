@@ -27,7 +27,7 @@
       <el-container style="height: 92%">
         <!--      左侧菜单栏-->
         <el-aside width="200px" style="background-color: #e9f2f8">
-          <el-menu unique-opened router >
+          <el-menu unique-opened router>
             <el-submenu  v-for="(item,index) in getRoutes" :key="index" :index="index+''"
                          style="background-color: #d2e7f5;border-bottom: #e3e3e3 solid 2px">
               <template slot="title"><i :class="item.iconcls" style="color: #8ae38a;margin-right: 5px;"></i>
@@ -51,11 +51,27 @@
 
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>{{this.$router.currentRoute.name}}</el-breadcrumb-item>
+<!--            <el-breadcrumb-item v-for="(item, index) in breadList" :key="index"-->
+<!--              :to="item.path"-->
+<!--            >-->
+<!--              {{-->
+<!--                item.name-->
+<!--              }}-->
+<!--            </el-breadcrumb-item>-->
+
           </el-breadcrumb>
 
-          <div class="homeWelcome" v-if="this.$router.currentRoute.path=='/home'">
-            欢迎来到智能制造知识工程系统！
+          <div v-if="this.$router.currentRoute.path=='/home'">
+            <div class="homeWelcome" >
+              欢迎来到智能制造知识工程系统！
+            </div>
+            <el-carousel :interval="4000" type="card" height="400px"  style=" margin-top: 70px;">
+              <el-carousel-item v-for="item in 6" :key="item">
+                <h3 class="medium">{{ item }}</h3>
+              </el-carousel-item>
+            </el-carousel>
           </div>
+
           <router-view/>
         </el-main>
 
@@ -70,7 +86,10 @@ export default {
   name: "Home",
   data(){
     return{
-      user:{}
+      user:{},
+      breadList:[
+
+      ]
     };
   },
   methods:{
@@ -103,6 +122,23 @@ export default {
       else if(cmd == 'userinfo'){
         this.$router.push('/userinfo');
       }
+    },
+    menu(){
+      console.log(this.$router)
+    },
+    /**
+     * @description 获取路由数组
+     * @params val 路由参数
+     * @author tw
+     */
+    getBreadList(val) {
+      // 过滤路由matched对象
+      if (val.matched) {
+        let matched = val.matched.filter(item => item.path && item.path!='/home');
+        // 拿到过滤好的路由v-for遍历出来
+        //console.log('matched',matched)
+        this.breadList = matched;
+      }
     }
   },
   computed:{
@@ -112,11 +148,17 @@ export default {
     },
     getUser(){
       return this.$store.state.currentUser;
-    }
+    },
+
   },
   mounted() {
-    console.log(this.$store.state.currentUser.userFace);
+    //console.log(this.$store.state.currentUser.userFace);
     this.user = this.$store.state.currentUser;
+  },
+  watch:{
+    $route(val){
+      this.getBreadList(val);
+    }
   }
 }
 </script>
@@ -157,5 +199,19 @@ export default {
   color: #409eff;
   padding-top: 50px;
 }
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
 
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+  background-color: #d3dce6;
+}
 </style>

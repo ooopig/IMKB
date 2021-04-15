@@ -232,7 +232,111 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="文件管理" name="third">文件管理</el-tab-pane>
+        <el-tab-pane label="文件管理" name="third">
+          <!--          顶部搜索栏-->
+          <div style=" display: flex;flex-direction: row;justify-content: space-between; padding: 2px;border-bottom: #e3e3e3 solid 1px">
+            <div >
+              <el-input clearable
+                        v-model="filePara.name"
+                        @clear="initFiles"
+                        size="small"
+                        style="width: 200px;margin-right: 10px;"
+                        prefix-icon="el-icon-search"
+                        placeholder="请输入文件名">
+              </el-input>
+              <el-input clearable
+                        v-model="filePara.createUserName"
+                        @clear="initFiles"
+                        size="small"
+                        style="width: 200px;margin-right: 10px;"
+                        prefix-icon="el-icon-search"
+                        placeholder="请输入文件创建者姓名">
+              </el-input>
+              <el-input clearable
+                        v-model="filePara.nodeName"
+                        @clear="initFiles"
+                        size="small"
+                        style="width: 200px;margin-right: 10px;"
+                        prefix-icon="el-icon-search"
+                        placeholder="请输入知识描述">
+              </el-input>
+              <el-button size="small" type="primary" icon="el-icon-search" @click="searchFiles">搜索</el-button>
+            </div>
+          </div>
+          <!--          关系信息展示-->
+          <div style="width: 100%;">
+            <el-table
+                :data="files"
+                stripe
+                border
+                style="width: 100%">
+              <el-table-column
+                  type="selection"
+                  width="60">
+              </el-table-column>
+              <el-table-column
+                  prop="id"
+                  label="编号"
+                  width="100"
+                  fixed
+                  align="center">
+              </el-table-column>
+              <el-table-column
+                  prop="name"
+                  label="名称"
+                  fixed
+                  width="400"
+                  align="center">
+              </el-table-column>
+              <el-table-column
+                  prop="type"
+                  label="类型"
+                  width="100"
+                  align="center">
+              </el-table-column>
+              <el-table-column
+                  prop="createUserName"
+                  label="创建人"
+                  width="150"
+                  align="center">
+              </el-table-column>
+              <el-table-column
+                  prop="createTime"
+                  label="创建时间"
+                  width="200"
+                  align="center">
+              </el-table-column>
+              <el-table-column
+                  prop="nodeName"
+                  label="对应节点"
+                  width="150"
+                  align="center">
+              </el-table-column>
+              <el-table-column
+                  prop="operate"
+                  label="操作"
+                  fixed="right"
+                  width="150"
+                  align="center">
+                <template slot-scope="scope">
+
+                  <el-link :underline="false" :href="scope.row.url" target="_blank">查看</el-link>
+
+                  <el-button size="mini" type="danger"  @click="deletefile(scope.row) " style="margin-left: 10px">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div style="margin-top: 5px; display: flex;justify-content: center;">
+              <el-pagination
+                  background
+                  layout="total, prev, pager, next"
+                  :total="totalFiles"
+                  @current-change="fileChangePage"
+              >
+              </el-pagination>
+            </div>
+          </div>
+        </el-tab-pane>
       </el-tabs>
 <!--    修改节点信息dialog-->
     <el-dialog
@@ -293,9 +397,10 @@ export default {
   data() {
     return {
       activeName: 'first',
-      nodes:[],
       totalNodes:0,
       totalRelations:0,
+      totalFiles:0,
+      nodes:[],
       relations:[],
       files:[],
       nodePara:{
@@ -309,6 +414,13 @@ export default {
         currentPage:1,
         size:8,
         name:'',
+      },
+      filePara:{
+        currentPage:1,
+        size:8,
+        nodeName:'',
+        createUserName:'',
+        name:''
       },
       levelOptions:
           [
@@ -336,20 +448,31 @@ export default {
       node:{},
       nodeStatus:true,
       nodeDialogVisible:false,
-      relationDialogVisible:false
+      relationDialogVisible:false,
+      fileDialogVisible:false,
     };
   },
   methods: {
+    searchFiles(){
+      this.initFiles()
+    },
+    // lookFile(file){
+    //
+    // },
+    deletefile(file){
+
+    },
     handleClick() {
       let that = this
       if(that.activeName == 'first'){
-        console.log(0)
+        //console.log(0)
         this.initNodes()
       }else if(that.activeName == 'second'){
-        console.log(1)
+        //console.log(1)
         this.initRelations()
       }else if(that.activeName == 'third'){
-        console.log(2)
+       // console.log(2)
+        this.initFiles()
       }
     },
     editNode(node){
@@ -444,6 +567,22 @@ export default {
         }
       })
     },
+    initFiles(){
+      let that = this
+      this.getRequest('/manage/kb/getFiles?currentPage='+that.filePara.currentPage+
+          '&size='+that.filePara.size+
+          '&name='+that.nodePara.name+
+          '&createUserName='+that.filePara.createUserName+
+          '&nodeName='+that.filePara.nodeName
+      ).then(resp=>{
+        console.log(resp)
+        if(resp){
+          that.files = resp.data
+          that.totalFiles = resp.total
+          //this.$set(this,users,resp.data)
+        }
+      })
+    },
     cancleUpdateNode(){
       this.nodeDialogVisible = false
     },
@@ -475,6 +614,10 @@ export default {
     },
     nodeChangePage(currentPage){
       this.nodePara.currentPage = currentPage
+      this.initNodes()
+    },
+    fileChangePage(currentPage){
+      this.filePara.currentPage = currentPage
       this.initNodes()
     },
     searchNodes(){

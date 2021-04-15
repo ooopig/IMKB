@@ -1,5 +1,6 @@
 package com.ssdut.imkg.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.ssdut.imkg.pojo.Menu;
 import com.ssdut.imkg.mapper.MenuMapper;
@@ -66,5 +67,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             valueOperations.set("menu-"+userId,menus);
         }
         return menus;
+    }
+
+    @Override
+    public Menu getMenuById(Integer id) {
+        return menuMapper.selectOne(new QueryWrapper<Menu>().eq("id",id));
     }
 }

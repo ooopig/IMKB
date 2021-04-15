@@ -41,7 +41,7 @@
     <select id="getChildrenRelation" resultMap="BaseResultMap">
         select *
         from relation
-        where target_id = #{id}
+        where source_id= #{id} or target_id = #{id}
     </select>
 
     <delete id="removeByIdAndName">

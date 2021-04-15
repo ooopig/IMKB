@@ -255,6 +255,18 @@ CREATE TABLE `relation` (
   PRIMARY KEY (`id`) USING BTREE,
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
+-- ----------------------------
+-- Table structure for node_export
+-- ----------------------------
+DROP TABLE IF EXISTS `node_export`;
+CREATE TABLE `node_export` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '关系主键',
+  `expert_id` int(11) not null COMMENT '专家id',
+  `node_id` int(11) not null COMMENT '节点id',
+  `time` varchar(100) DEFAULT NULL COMMENT '评审时间',
+  `result` varchar(100) DEFAULT NULL COMMENT '是否通过',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for file 文件
@@ -265,6 +277,7 @@ CREATE TABLE `file` (
   `name` varchar (255) default null COMMENT '文件名字',
   `type` varchar (255) default null COMMENT '文件类型',
   `url` varchar (255) default null COMMENT '文件地址',
+  `description` varchar (10000) default null COMMENT '文件描述',
   `node_id` int (11) default null COMMENT '节点id',
   `create_user` int(11) DEFAULT NULL COMMENT '创建人',
   `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',

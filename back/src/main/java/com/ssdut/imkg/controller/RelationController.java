@@ -39,12 +39,13 @@ public class RelationController {
         return RespBean.error("添加关系失败，请重试");
     }
 
-    @ApiOperation(value = "查找一个节点的所有子关系")
+    @ApiOperation(value = "查找一个节点的所有关系")
     @GetMapping("/kg/graph/getRelation/{id}")
     public List<Relation> getChildrenRelation(@PathVariable Integer id){
         List<Relation> relations = relationService.getChildrenRelation(id);
         return relations;
     }
+
 
     @ApiOperation(value = "删除关系")
     @GetMapping("/manage/kb/delOneRelation/{id}")

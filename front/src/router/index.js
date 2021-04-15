@@ -67,6 +67,16 @@ const router = new VueRouter({
 //   router.addRoutes(params)
 // }
 
+// 在 router/index.js 中 将 addRouter 方法封装一下
+
+// router.$addRoutes = (params) => {
+//   router.matcher = new VueRouter({
+//     mode: 'history',
+//     routes: router.options.routes
+//   }).matcher
+//   router.addRoutes(params)
+// }
+
 
 // const createRouter = () => new VueRouter({
 //   mode: 'history',

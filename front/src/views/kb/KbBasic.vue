@@ -1,6 +1,6 @@
 <template>
   <div>
-    KbBasic
+
   </div>
 </template>
 

@@ -41,7 +41,8 @@ export const formatRoutes = (routes) => {
             children: children,
             meta:{
                 //
-                title: '智能制造知识工程系统'
+                title: '智能制造知识工程系统',
+                keepAlive:false,
             },
         }
         if(component.startsWith("Home")){
