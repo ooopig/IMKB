@@ -53,7 +53,7 @@ public interface NodeMapper extends BaseMapper<Node> {
 
     IPage<NodeParam> getExpertNodes(Page<NodeParam> page, NodeParam node);
 
-    Integer adoptNode(Integer id);
+    Integer adoptNode(Integer id,Integer level);
 
     Integer notAdoptNode(Integer id);
 }

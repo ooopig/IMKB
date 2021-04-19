@@ -190,14 +190,21 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
     }
 
     @Override
-    public Integer adoptNode(Integer id) {
+    public Integer adoptNode(Integer id,Integer level) {
 
-        return nodeMapper.adoptNode(id);
+        return nodeMapper.adoptNode(id,level);
     }
 
     @Override
     public Integer notAdoptNode(Integer id) {
         return nodeMapper.notAdoptNode(id);
+    }
+
+    @Override
+    public Node searchNodeByName3(String name) {
+
+        return nodeMapper.selectOne(new QueryWrapper<Node>()
+        .eq("name",name));
     }
 
 

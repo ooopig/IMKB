@@ -496,7 +496,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteRequest('/manage/kb/delNode/'+node.id)
+        this.deleteRequest('/java/manage/kb/delNode/'+node.id)
             .then(resp=>{
               if(resp){
                 this.initNodes()
@@ -520,7 +520,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteRequest('/manage/kb/delNode/'+node.id)
+        this.deleteRequest('/java/manage/kb/delNode/'+node.id)
             .then(resp=>{
               if(resp){
                 this.initNodes()
@@ -540,7 +540,7 @@ export default {
     },
     initNodes(){
       let that = this
-      this.getRequest('/manage/kb/getNodes?currentPage='+that.nodePara.currentPage+
+      this.getRequest('/java/manage/kb/getNodes?currentPage='+that.nodePara.currentPage+
           '&size='+that.nodePara.size+
           '&name='+that.nodePara.name+
           '&level='+that.nodePara.level+
@@ -555,7 +555,7 @@ export default {
     },
     initRelations(){
       let that = this
-      this.getRequest('/manage/kb/getRelations?currentPage='+that.nodePara.currentPage+
+      this.getRequest('/java/manage/kb/getRelations?currentPage='+that.nodePara.currentPage+
           '&size='+that.nodePara.size+
           '&name='+that.nodePara.name
       ).then(resp=>{
@@ -569,7 +569,7 @@ export default {
     },
     initFiles(){
       let that = this
-      this.getRequest('/manage/kb/getFiles?currentPage='+that.filePara.currentPage+
+      this.getRequest('/java/manage/kb/getFiles?currentPage='+that.filePara.currentPage+
           '&size='+that.filePara.size+
           '&name='+that.nodePara.name+
           '&createUserName='+that.filePara.createUserName+
@@ -595,12 +595,12 @@ export default {
         this.node.status = 1
       }
       that.node.modifyUser = that.$store.state.currentUser.id
-      that.getRequest('/kg/graph/node/'+that.node.id)
+      that.getRequest('/java/kg/graph/node/'+that.node.id)
           .then(resp=>{
             if(resp){
               that.node.createUser = resp.createUser
               console.log(that.node)
-              that.putRequest('/manage/kb/updateNode/',that.node)
+              that.putRequest('/java/manage/kb/updateNode/',that.node)
                   .then(resp=>{
                     if(resp){
                       that.initNodes()

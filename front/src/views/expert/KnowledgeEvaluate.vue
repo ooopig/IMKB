@@ -82,7 +82,7 @@ export default {
   methods:{
     initnodes(){
       let that = this
-      that.getRequest('/expert/kb/getNodes?currentPage='+that.nodePara.currentPage+'&size='+that.nodePara.size)
+      that.getRequest('/java/expert/kb/getNodes?currentPage='+that.nodePara.currentPage+'&size='+that.nodePara.size)
       .then(resp=>{
         if(resp){
           that.totalNodes = resp.total
@@ -109,7 +109,7 @@ export default {
       let that = this
       delete node.summary
       //console.log(node)
-      that.getRequest('/expert/kb/notAdoptNode/'+node.id)
+      that.getRequest('/java/expert/kb/notAdoptNode/'+node.id)
       .then(resp=>{
         if(resp){
           that.initnodes()

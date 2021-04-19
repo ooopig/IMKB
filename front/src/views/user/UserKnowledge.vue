@@ -1,11 +1,10 @@
 <template>
   <div>
-    <dvi v-if="userNodes">
+    <div v-if="userNodes">
       <el-card v-for="node in userNodes" class="node-item" shadow="hover">
         <div style="display: flex;flex-direction: row">
-          <el-image class="img" v-if="node.pics.length==0"  :src="require('../../static/no_pic.jpg')">
-          </el-image>
-          <el-image class="img" v-if="node.pics.length>0" :src="node.pics[0].url"></el-image>
+          <el-image class="img" v-if="node.pics.length==0"  :src="require('../../static/no_pic.jpg')"></el-image>
+          <el-image class="img" v-else-if="node.pics.length>0" :src="node.pics[0]"></el-image>
           <div @click="specific(node.id)" style="display: flex;flex-direction: column;justify-content: space-between; width: 90%;padding-left: 10px;">
             <div>
               <div style="font-size: larger;font-weight: bold ">{{node.name}}</div>
@@ -22,7 +21,7 @@
         </div>
 
       </el-card>
-    </dvi>
+    </div>
     <div v-else class="homeWelcome">
       你还没有贡献任何知识
     </div>
@@ -39,40 +38,15 @@ export default {
 
   },
   methods:{
-    test(){
-      let aa  = {
-        "summary":"[印刷（Printing，Graphic Arts，也用使用Graphic Communications即图形传播的）是将文字、图画、照片、防伪等原稿经制版、施墨、加压等工序，使油墨转移到纸张、纺织品、塑料品、皮革、PVC、PC等材料表面上，批量复制原稿内容的技术。印刷是把经审核批准的印刷版，通过印刷机械及专用油墨转印到承印物的过程。",
-        "specific_info":"None",
-        "basic_info":{"中文名": "印刷",
-          "外文名": "Printing",
-          "适用领域": "纺织品、包装、技术性、广告行业",
-          "印刷原理": "物理性印刷和化学性印刷",
-          "行业特点": "传统行业",
-          "印刷城地址": "浙江省、温州市、龙港市、印刷城"},
-        "pic":"https://bkimg.cdn.bcebos.com/pic/5fdf8db1cb134954196b4d6b564e9258d1094a43?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"
-      }
-      let bb = {
-        "summary":"印刷（Printing，GraphicArts，也用使用GraphicCommunications即图形传播的）是将文字、图画、照片、防伪等原稿经制版、施墨、加压等工序，使油墨转移到纸张、纺织品、塑料品、皮革、PVC、PC等材料表面上，批量复制原稿内容的技术。印刷是把经审核批准的印刷版，通过印刷机械及专用油墨转印到承印物的过程。[1]",
-        "specific_info":"",
-        "basic_info":{
-          "中文名":"印刷",
-          "印刷原理":"物理性印刷和化学性印刷",
-          "行业特点":"传统行业",
-          "外文名":"Printing",
-          "印刷城地址":"浙江省、温州市、龙港市、印刷城",
-          "适用领域":"纺织品、包装、技术性、广告行业"
-        },
-        "best_practices":[],
-        "pic":"https://bkimg.cdn.bcebos.com/pic/5fdf8db1cb134954196b4d6b564e9258d1094a43?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"}
+    specific(id){
 
     },
-
     initUserNodes(){
       let that = this
       let id = that.$store.state.currentUser.id
-      that.getRequest('/kg/graph/search3?id='+id)
+      that.getRequest('/java/kg/graph/search3?id='+id)
       .then(resp=>{
-        console.log(resp)
+        //console.log(resp)
         let results = []
         resp.forEach(node=>{
           let result = {
@@ -84,7 +58,12 @@ export default {
             pics:[],
             files:[],
           }
-          that.getRequest('/file/get/'+node.id)
+          if(result.properties.pic == undefined){
+
+          }else {
+            result.pics.push(result.properties.pic)
+          }
+          that.getRequest('/java/file/get/'+node.id)
           .then(resp=>{
             if(resp){
               for(let item of resp){
@@ -96,10 +75,11 @@ export default {
               }
               results.push(result)
             }
+            console.log(results)
+            that.userNodes = results
           })
         })
-        console.log(results)
-        that.userNodes = results
+
       })
     }
   },

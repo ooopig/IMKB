@@ -106,7 +106,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           //alert('submit!');
-          this.postRequest('/register',this.ruleForm)
+          this.postRequest('/java/register',this.ruleForm)
               .then(resp=>{
                 if(resp){
                   //更新成功后，返回登录界面

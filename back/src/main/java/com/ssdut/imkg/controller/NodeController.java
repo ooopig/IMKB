@@ -121,6 +121,17 @@ public class NodeController {
         return nodeService.searchNodeByName2(name,level);
     }
 
+    @ApiOperation(value = "按名字精准搜索节点")
+    @GetMapping("/kg/graph/search4")
+    public Node searchNodeByName3(String name){
+        if(name.equals("")||name==null){
+            return null;
+        }
+        Node node = nodeService.searchNodeByName3(name);
+        node.setProperties(null);
+        return node;
+    }
+
     @ApiOperation(value = "按创建者id搜索节点")
     @GetMapping("/kg/graph/search3")
     public List<Node> searchNodeByCreateUserId(Integer id){
@@ -154,9 +165,10 @@ public class NodeController {
     }
 
     @ApiOperation(value = "节点审核通过")
-    @GetMapping("/expert/kb/adoptNode/{id}")
-    public Integer adoptNode(@PathVariable("id")Integer id){
-        return nodeService.adoptNode(id);
+    @GetMapping("/expert/kb/adoptNode/{id}/{level}")
+    public Integer adoptNode(@PathVariable("id")Integer id,
+                             @PathVariable("level")Integer level){
+        return nodeService.adoptNode(id,level);
     }
 
     @ApiOperation(value = "节点审核不通过")

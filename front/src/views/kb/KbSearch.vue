@@ -158,7 +158,7 @@ name: "KbSearch",
       if(that.inputName == ''){
         this.$message.error('请输入查询关键词');
       }
-      that.getRequest('/kg/graph/search2?name='+that.inputName)
+      that.getRequest('/java/kg/graph/search2?name='+that.inputName)
           .then(resp=>{
             if(resp){
               this.$message({
@@ -179,7 +179,7 @@ name: "KbSearch",
                   createTime:node.createTime,
                   disabled:true
                 }
-                that.getRequest('/file/get/'+node.id)
+                that.getRequest('/java/file/get/'+node.id)
                     .then(resp=>{
                       if(resp){
                         for(let item of resp){

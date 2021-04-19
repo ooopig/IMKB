@@ -8,7 +8,7 @@ export const initMenu = (router, store) => {
         console.log("store中存有routes信息");
         return;
     }
-    getRequest("/menu").then(data => {
+    getRequest("/java/menu").then(data => {
         if (data) {
             let fmtRoutes = formatRoutes(data);
             //添加路由

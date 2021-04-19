@@ -1,6 +1,7 @@
 package com.ssdut.imkg.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -31,9 +32,11 @@ public class Relation implements Serializable {
     private String name;
 
     @ApiModelProperty(value = "头节点")
+    @TableField(value = "source_id")
     private Integer sourceId;
 
     @ApiModelProperty(value = "尾节点")
+    @TableField(value = "target_id")
     private Integer targetId;
 
     @ApiModelProperty(value = "权重")
@@ -43,15 +46,19 @@ public class Relation implements Serializable {
     private String properties;
 
     @ApiModelProperty(value = "创建人")
+    @TableField(value = "create_user")
     private Integer createUser;
 
     @ApiModelProperty(value = "创建时间")
+    @TableField(value = "create_time")
     private String createTime;
 
     @ApiModelProperty(value = "修改人")
+    @TableField(value = "modify_user")
     private Integer modifyUser;
 
     @ApiModelProperty(value = "修改时间")
+    @TableField(value = "modify_time")
     private String modifyTime;
 
 

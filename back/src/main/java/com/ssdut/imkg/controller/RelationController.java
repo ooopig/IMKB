@@ -9,6 +9,7 @@ import com.ssdut.imkg.pojo.pub.RelationParam;
 import com.ssdut.imkg.pojo.pub.RespBean;
 import com.ssdut.imkg.pojo.pub.RespPageBean;
 import com.ssdut.imkg.service.RelationService;
+import com.ssdut.imkg.utils.TimeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class RelationController {
     @ApiOperation(value = "添加关系")
     @PostMapping("/manage/kb/addRelation")
     public RespBean addRelation(@RequestBody Relation relation){
+        relation.setCreateTime(TimeUtils.nowStr());
         if(relationService.addRelation(relation)){
             return RespBean.success("添加关系成功！");
         }

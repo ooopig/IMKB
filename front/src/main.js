@@ -27,7 +27,11 @@ import Bmob from 'hydrogen-js-sdk'
 //1044ee2f21839bbdea534d54b96a4d1c
 Bmob.initialize('c05ef2cc5739c911','292711')
 
-axios.defaults.baseURL="/"
+// axios.defaults.baseURL="/"
+
+// Vue.prototype.pythonAxios = axios.create({
+//   baseURL:'/python'
+// })
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
@@ -46,7 +50,7 @@ router.beforeEach((to, from, next) => {
   if (window.sessionStorage.getItem("tokenStr")) {
     initMenu(router, store);
     if (!window.sessionStorage.getItem("user")) {
-      return getRequest('/user/info').then(resp => {
+      return getRequest('/java/user/info').then(resp => {
         if (resp) {
           //存入用户信息
           window.sessionStorage.setItem("user", JSON.stringify(resp));

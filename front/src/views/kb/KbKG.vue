@@ -376,7 +376,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteRequest('/manage/kb/delNode/'+node.id)
+        this.deleteRequest('/java/manage/kb/delNode/'+node.id)
             .then(resp=>{
               if(resp){
                 //刷新动画
@@ -621,7 +621,7 @@ export default {
      */
     singleClick(d){
       let that = this
-      that.getRequest('/kg/graph/node/'+d.id)
+      that.getRequest('/java/kg/graph/node/'+d.id)
           .then(node=>{
             that.board.haveCurrentNode=true
             let prop = JSON.parse(node['properties'])
@@ -671,7 +671,7 @@ export default {
     */
     getNodeChildren(id){
       let that = this
-      that.getRequest('/kg/graph/getChildren/'+id)
+      that.getRequest('/java/kg/graph/getChildren/'+id)
           .then(resp=>{
               that.existNodeId = []
               for (let node in that.dataGraph.nodes) {
@@ -696,7 +696,6 @@ export default {
               }
               //获得所有子关系
               that.getNodeRelations(id)
-              //that.updateGraph(that.dataGraph)
             }
       })
     },
@@ -707,7 +706,7 @@ export default {
      */
     getNodeParent(id){
       let that = this
-      that.getRequest('/kg/graph/getParents/'+id)
+      that.getRequest('/java/kg/graph/getParents/'+id)
           .then(resp=>{
             if(resp){
               that.board.parents = resp
@@ -721,7 +720,7 @@ export default {
      */
     getNodeRelations(id){
       let that = this
-      that.getRequest('/kg/graph/getRelation/'+id)
+      that.getRequest('/java/kg/graph/getRelation/'+id)
           .then(resp=>{
             if(resp){
               that.existRelationId = []
@@ -792,18 +791,7 @@ export default {
             .text(function () {
               return topText
             })
-        // d3text.append('tspan')
-        //     .attr('x', 0)
-        //     .attr('y', midY)
-        //     .text(function () {
-        //       return midText
-        //     })
-        // d3text.append('tspan')
-        //     .attr('x', 0)
-        //     .attr('y', botY - 7)
-        //     .text(function () {
-        //       return botText
-        //     })
+
       }
     },
     /**
@@ -919,7 +907,7 @@ export default {
 
     initNodeNames() {
       let that = this
-      that.getRequest('/kg/graph/search/names')
+      that.getRequest('/java/kg/graph/search/names')
       .then(resp=>{
         that.nodeNames = resp
         console.log('名字：',that.nodeNames)
@@ -932,7 +920,7 @@ export default {
      */
     search(){
       let that = this
-      that.getRequest('/kg/graph/search?name='+that.inputName+'&level='+that.inputLevel)
+      that.getRequest('/java/kg/graph/search?name='+that.inputName+'&level='+that.inputLevel)
       .then(resp=>{
         if(resp){
           let temp_nodes = []
@@ -1004,9 +992,10 @@ export default {
      */
     initNode(){
       let that = this
-      that.getRequest('/kg/graph/initNode')
+      that.getRequest('/java/kg/graph/initNode')
           .then(resp=>{
             if(resp){
+              console.log('initnode',resp)
               //that.nodes = resp
               let temp_nodes = []
               for (let index in resp) {
@@ -1029,8 +1018,9 @@ export default {
      */
     initLink(){
       let that = this
-      that.getRequest('/kg/graph/getRelation/1')
+      that.getRequest('/java/kg/graph/getRelation/1')
           .then(resp=>{
+            console.log('links',resp)
             if(resp){
               let temp_links = []
               for (let index in resp) {
@@ -1081,7 +1071,7 @@ export default {
 .container{
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 90%;
 }
 .top{
   padding: 3px;
@@ -1096,6 +1086,7 @@ export default {
 }
 .ggraph{
   width: 80%;
+  /*background-color: #f6f6f6;*/
 }
 .board{
   width: 20%;

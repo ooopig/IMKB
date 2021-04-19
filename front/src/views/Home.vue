@@ -104,7 +104,7 @@ export default {
           type: 'warning'
         }).then(() => {
           //注销
-          this.postRequest("/logout");
+          this.postRequest("/java/logout");
           //清除用户信息
           window.sessionStorage.removeItem("user");
           window.sessionStorage.removeItem("tokenStr");

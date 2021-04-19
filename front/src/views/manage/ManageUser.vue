@@ -221,7 +221,7 @@ export default {
   methods:{
     initUsers(){
       let that = this
-      this.getRequest('/manage/user/getUsers?currentPage='+that.para.currentPage+
+      this.getRequest('/java/manage/user/getUsers?currentPage='+that.para.currentPage+
           '&size='+that.para.size+
           '&name='+that.para.name+
           '&role='+that.para.role+
@@ -277,7 +277,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteRequest('/manage/user/delUser/'+user.id)
+        this.deleteRequest('/java/manage/user/delUser/'+user.id)
             .then(resp=>{
               if(resp){
                 this.initUsers()
@@ -303,7 +303,7 @@ export default {
     sureUpdateInfo(){
       console.log(this.user)
       let that = this
-      this.putRequest("/manage/user/update/",this.user)
+      this.putRequest("/java/manage/user/update/",this.user)
       .then(resp=>{
         if(resp){
           this.initUsers()
@@ -313,7 +313,7 @@ export default {
       this.dialogVisible = false
     },
     exportUsers(){
-      this.getRequest("/manage/user/getAllUsers").then(resp=>{
+      this.getRequest("/java/manage/user/getAllUsers").then(resp=>{
         if(resp){
           //要导出的json数据
           const jsonData = resp.obj

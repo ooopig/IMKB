@@ -162,7 +162,8 @@ export default {
       })
     },
     initUser(){
-      this.getRequest('/user/info')
+      console.log('inituser')
+      this.getRequest('/java/user/info')
           .then(resp=>{
             if(resp){
               console.log('拿到用户信息'+resp);
@@ -177,7 +178,7 @@ export default {
       this.dialogVisible = true;
     },
     SureUpdateInfo(){
-      putRequest('/user/update',this.newUser)
+      putRequest('/java/user/update',this.newUser)
           .then(resp=>{
             if(resp){
               this.dialogVisible = false;
@@ -198,11 +199,11 @@ export default {
         if (valid) {
           this.ruleForm.userId = this.user.id;
           this.ruleForm.pass = this.ruleForm.newPass;
-          putRequest('/user/pass',this.ruleForm)
+          putRequest('/java/user/pass',this.ruleForm)
               .then(resp=>{
                 if(resp){
                   //更新成功后，退出登录
-                  this.postRequest('/logout');
+                  this.postRequest('/java/logout');
                   window.sessionStorage.removeItem('user');
                   window.sessionStorage.removeItem('tokenStr');
                   this.$store.commit("initRoutes",[]);

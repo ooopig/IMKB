@@ -85,7 +85,9 @@ public interface NodeService extends IService<Node> {
 
     RespPageBean getExpertNodes(Integer currentPage, Integer size, NodeParam node);
 
-    Integer adoptNode(Integer id);
+    Integer adoptNode(Integer id,Integer level);
 
     Integer notAdoptNode(Integer id);
+
+    Node searchNodeByName3(String name);
 }

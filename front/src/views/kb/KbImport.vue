@@ -187,7 +187,7 @@ export default {
           }
           param.properties = JSON.stringify(properties)
           //保存该节点
-          that.postRequest('/kg/graph/addNode',param)
+          that.postRequest('/java/kg/graph/addNode',param)
           .then(resp01=>{
               if(resp01){
                 flag = true
@@ -204,7 +204,7 @@ export default {
                     type: "img",
                     url: imgsToDatabase[i].url
                   }
-                  that.postRequest('/file/upload',para)
+                  that.postRequest('/java/file/upload',para)
                   .then(resp02=>{
                     if(resp02){
                       console.log('图片写入数据库完成')
@@ -235,7 +235,7 @@ export default {
                         type: "file",
                         url: filesToDatabase[i].url
                       }
-                      that.postRequest('/file/upload',para)
+                      that.postRequest('/java/file/upload',para)
                           .then(resp03=>{
                             if(resp03){
                               console.log('文件写入数据库完成')
@@ -260,7 +260,7 @@ export default {
         }
         param.properties = JSON.stringify(properties)
         //保存该节点
-        that.postRequest('/kg/graph/addNode',param)
+        that.postRequest('/java/kg/graph/addNode',param)
             .then(resp01=>{
               if(resp01){
                 flag = true
@@ -288,7 +288,7 @@ export default {
                         type: "file",
                         url: filesToDatabase[i].url
                       }
-                      that.postRequest('/file/upload',para)
+                      that.postRequest('/java/file/upload',para)
                           .then(resp02=>{
                             if(resp02){
                               flag = true

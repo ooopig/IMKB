@@ -75,7 +75,7 @@ export default {
     };
     return{
       //captchaUrl:"http://localhost:8081/captcha?time="+new Date(),
-      captchaUrl:"/captcha?time="+new Date(),
+      captchaUrl:"/java/captcha?time="+new Date(),
       checked: false,
       loading:false,
       loginForm: {
@@ -94,7 +94,7 @@ export default {
   methods:{
     updateCaptcha(){
       //this.captchaUrl = "http://localhost:8081/captcha?time="+new Date();
-      this.captchaUrl = "/captcha?time="+new Date();
+      this.captchaUrl = "/java/captcha?time="+new Date();
     },
     regist(){
       this.$router.replace("/register");
@@ -106,18 +106,18 @@ export default {
           //alert('submit!');
           this.loading=false;
           console.log(this.loginForm);
-          postRequest('/login',this.loginForm)
+          postRequest('/java/login',this.loginForm)
               .then(response=>{
                 //alert(response);
                 if(response){
-
+                  console.log('login',response)
                   const tokenStr = response.obj.tokenHead+response.obj.token;
                   window.sessionStorage.setItem('tokenStr',tokenStr); // token存储到session中
                   //跳转首页,不可回退
-                  console.log('登陆成功，跳转首页+'+ this.$route.query.redirect)
-                  let path = this.$route.query.redirect;
-                  this.$router.replace((path=='/' || path == undefined)?'/home':path);
-                  //this.$router.replace('/home')
+                  // console.log('登陆成功，跳转首页+'+ this.$route.query.redirect)
+                  // let path = this.$route.query.redirect;
+                  // this.$router.replace((path=='/' || path == undefined)?'/home':path);
+                  this.$router.replace('/home')
                 }
               })
         } else {

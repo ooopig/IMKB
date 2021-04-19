@@ -126,7 +126,7 @@
 
     <update id="adoptNode">
         update node
-        set status = 1
+        set status = 1,level = #{level}
         where id = #{id}
     </update>
 
