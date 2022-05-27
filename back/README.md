@@ -22,8 +22,9 @@
 ### 3. 数据库设计
 我是用的是mysql数据库，建表文件就是imkg.sql, 数据库概念模型如下：
 ![image](https://user-images.githubusercontent.com/46115362/170702825-f6348651-b257-442e-aca2-cf62fa2f2a6b.png)
+虽然项目中用到了neo4j，但是由于操作比较繁琐，后面就放弃了，我直接将系欸但和关系存入到了mysql中，利用mysql进行增删改查
 
 ### 4. 运行
-运行前需要配置一下数据库，
-项目直接运行
-后端运行后，可以使用swagger打开网页（http:localhost:8081/doc.html） 查看所有的API接口，并且进行测试
+运行前需要进入application.yaml配置文件，针对自己的环境修改一下配置，主要是数据库
+然后直接运行项目即可
+后端运行成功后，可以使用swagger打开网页（http:localhost:8081/doc.html） 查看所有的API接口，并且进行测试
