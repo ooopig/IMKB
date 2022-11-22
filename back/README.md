@@ -29,3 +29,4 @@
 然后进入application.yaml配置文件，针对自己的环境修改一下配置
 然后直接运行项目即可
 后端运行成功后，可以使用swagger打开网页（http:localhost:8081/doc.html） 查看所有的API接口，并且进行测试
+admin 密码为：123
