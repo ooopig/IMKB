@@ -225,35 +225,47 @@ INSERT INTO `menu_role` VALUES (34, 204, 903);
 -- ----------------------------
 DROP TABLE IF EXISTS `node`;
 CREATE TABLE `node` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '节点主键',
-  `name` varchar (255) default null COMMENT '节点名字',
-  `level` int(11) DEFAULT 0 COMMENT '等级',
-  `status` int(11) DEFAULT 1 COMMENT '状态',
-  `properties` varchar(10000) default null COMMENT '节点属性',
-  `create_user` int(11) DEFAULT NULL COMMENT '创建人',
-  `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
-  `modify_user` int(11) DEFAULT NULL COMMENT '修改人',
-  `modify_time` varchar(100) DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE
+                        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '节点主键',
+                        `name` varchar (255) default null COMMENT '节点名字',
+                        `level` int(11) DEFAULT 0 COMMENT '等级',
+                        `status` int(11) DEFAULT 1 COMMENT '状态',
+                        `properties` varchar(10000) default null COMMENT '节点属性',
+                        `create_user` int(11) DEFAULT NULL COMMENT '创建人',
+                        `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
+                        `modify_user` int(11) DEFAULT NULL COMMENT '修改人',
+                        `modify_time` varchar(100) DEFAULT NULL COMMENT '修改时间',
+                        PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+insert into node values (1,'制造业',0,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+insert into node values (2,'产品生产',1,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+insert into node values (3,'标准规范',1,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+insert into node values (4,'加工工艺',1,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+insert into node values (5,'生产厂商',1,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+
 
 -- ----------------------------
 -- Table structure for relation
 -- ----------------------------
 DROP TABLE IF EXISTS `relation`;
 CREATE TABLE `relation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '关系主键',
-  `name` varchar (255) default null COMMENT '关系名字',
-  `source_id` int(11) not null COMMENT '头节点',
-  `target_id` int(11) not null COMMENT '尾节点',
-  `weight` int(11) DEFAULT 1 COMMENT '权重',
- `properties` varchar(10000) default null COMMENT '关系属性',
-  `create_user` int(11) DEFAULT NULL COMMENT '创建人',
-  `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
-  `modify_user` int(11) DEFAULT NULL COMMENT '修改人',
-  `modify_time` varchar(100) DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE
+                            `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '关系主键',
+                            `name` varchar (255) default null COMMENT '关系名字',
+                            `source_id` int(11) not null COMMENT '头节点',
+                            `target_id` int(11) not null COMMENT '尾节点',
+                            `weight` int(11) DEFAULT 1 COMMENT '权重',
+                            `properties` varchar(10000) default null COMMENT '关系属性',
+                            `create_user` int(11) DEFAULT NULL COMMENT '创建人',
+                            `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
+                            `modify_user` int(11) DEFAULT NULL COMMENT '修改人',
+                            `modify_time` varchar(100) DEFAULT NULL COMMENT '修改时间',
+                            PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+insert into relation values (1,'包括',1,2,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+insert into relation values (2,'包括',1,3,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+insert into relation values (3,'包括',1,4,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
+insert into relation values (4,'包括',1,5,1,'',1001,'2023-07-14 21:56:00',1001,'2023-07-14 21:56:00');
 
 -- ----------------------------
 -- Table structure for node_export
