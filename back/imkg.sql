@@ -234,7 +234,7 @@ CREATE TABLE `node` (
   `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
   `modify_user` int(11) DEFAULT NULL COMMENT '修改人',
   `modify_time` varchar(100) DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -252,7 +252,7 @@ CREATE TABLE `relation` (
   `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
   `modify_user` int(11) DEFAULT NULL COMMENT '修改人',
   `modify_time` varchar(100) DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -281,8 +281,8 @@ CREATE TABLE `file` (
   `node_id` int (11) default null COMMENT '节点id',
   `create_user` int(11) DEFAULT NULL COMMENT '创建人',
   `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
-  `down_times` int(11) default null COMMENT '下载次数'
-  PRIMARY KEY (`id`) USING BTREE,
+  `down_times` int(11) default null COMMENT '下载次数',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 
@@ -292,10 +292,10 @@ CREATE TABLE `file` (
 DROP TABLE IF EXISTS `search`;
 CREATE TABLE `search` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id` int(11) default null COMMENT '用户id'
+  `user_id` int(11) default null COMMENT '用户id',
   `content` varchar (255) default null COMMENT '搜索内容',
   `search_times` int(11) default null COMMENT '搜索次数',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -304,10 +304,10 @@ CREATE TABLE `search` (
 DROP TABLE IF EXISTS `collection`;
 CREATE TABLE `collection` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id` int(11) default null COMMENT '用户id'
-  `node_id` int(11) default null COMMENT '节点id'
-  `file_id` int(11) default null COMMENT '文件id'
-  PRIMARY KEY (`id`) USING BTREE,
+  `user_id` int(11) default null COMMENT '用户id',
+  `node_id` int(11) default null COMMENT '节点id',
+  `file_id` int(11) default null COMMENT '文件id',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 
